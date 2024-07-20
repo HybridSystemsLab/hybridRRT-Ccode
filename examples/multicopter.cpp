@@ -318,10 +318,10 @@ ompl::base::State *continuousSimulator(std::vector<double> inputs, ompl::base::S
     new_state->as<ompl::base::RealVectorStateSpace::StateType>()->values[3] = x4;
     new_state->as<ompl::base::RealVectorStateSpace::StateType>()->values[4] = x5;
     new_state->as<ompl::base::RealVectorStateSpace::StateType>()->values[5] = x6;
-    new_state->as<ompl::base::RealVectorStateSpace::StateType>()->values[6] = inputs[0];
-    new_state->as<ompl::base::RealVectorStateSpace::StateType>()->values[7] = inputs[1];        // No change in jump time
-    new_state->as<ompl::base::RealVectorStateSpace::StateType>()->values[8] = x_cur->as<ompl::base::RealVectorStateSpace::StateType>()->values[8]; // Append control input to state
-    new_state->as<ompl::base::RealVectorStateSpace::StateType>()->values[9] = x_cur->as<ompl::base::RealVectorStateSpace::StateType>()->values[9]; // Append control input to state
+    new_state->as<ompl::base::RealVectorStateSpace::StateType>()->values[6] = inputs[0]; // Append control input to state
+    new_state->as<ompl::base::RealVectorStateSpace::StateType>()->values[7] = inputs[1]; // Append control input to state
+    new_state->as<ompl::base::RealVectorStateSpace::StateType>()->values[8] = x_cur->as<ompl::base::RealVectorStateSpace::StateType>()->values[8]; // Do not change flow time
+    new_state->as<ompl::base::RealVectorStateSpace::StateType>()->values[9] = x_cur->as<ompl::base::RealVectorStateSpace::StateType>()->values[9]; // Do not change jumps
     return new_state;
 }
 
@@ -364,8 +364,8 @@ ompl::base::State *discreteSimulator(ompl::base::State *x_cur, std::vector<doubl
     new_state->as<ompl::base::RealVectorStateSpace::StateType>()->values[5] = 0;
     new_state->as<ompl::base::RealVectorStateSpace::StateType>()->values[6] = 0;    // No control input
     new_state->as<ompl::base::RealVectorStateSpace::StateType>()->values[7] = 0;    // No control input
-    new_state->as<ompl::base::RealVectorStateSpace::StateType>()->values[8] = x_cur->as<ompl::base::RealVectorStateSpace::StateType>()->values[8];  // No change in flow time
-    new_state->as<ompl::base::RealVectorStateSpace::StateType>()->values[9] = x_cur->as<ompl::base::RealVectorStateSpace::StateType>()->values[9];  // No change in jump time
+    new_state->as<ompl::base::RealVectorStateSpace::StateType>()->values[8] = x_cur->as<ompl::base::RealVectorStateSpace::StateType>()->values[8]; // Do not change flow time
+    new_state->as<ompl::base::RealVectorStateSpace::StateType>()->values[9] = x_cur->as<ompl::base::RealVectorStateSpace::StateType>()->values[9]; // Do not change jumps
     return new_state;
 }
 
