@@ -105,7 +105,7 @@ namespace ompl
                 Motion() = default;
 
                 /// \brief Constructor that allocates memory for the state
-                Motion(const base::SpaceInformationPtr &si) : state (si->allocState()) {}
+                Motion(const base::SpaceInformationPtr &si) : state(si->allocState()) {}
 
                 ~Motion() = default;
 
@@ -228,15 +228,17 @@ namespace ompl
             }
 
             /** \brief Set the continuous dyanmics simulator. */
-            void setContinuousSimulator(std::function<base::State *(std::vector<double> inputs, base::State *curState, double tFlowMax, 
-                                        base::State *newState)> function)
+            void setContinuousSimulator(std::function<base::State *(std::vector<double> inputs, base::State *curState, double tFlowMax,
+                                                                    base::State *newState)>
+                                            function)
             {
                 continuousSimulator_ = function;
             }
 
             /** \brief Set the collision checker. */
-            void setCollisionChecker(std::function<bool(std::vector<base::State *> *edge, std::function<bool(base::State *state)> obstacleSet, 
-                                     double ts, double tf, base::State *newState, int tFIndex)> function)
+            void setCollisionChecker(std::function<bool(std::vector<base::State *> *edge, std::function<bool(base::State *state)> obstacleSet,
+                                                        double ts, double tf, base::State *newState, int tFIndex)>
+                                         function)
             {
                 collisionChecker_ = function;
             }
@@ -255,20 +257,24 @@ namespace ompl
                 {
                 case UNIFORM_INT:
                     targetParameterCount = 2;
-                    getRandFlowInput_ = [this](int i) { return randomSampler_->uniformInt(minFlowInputValue_[i], maxFlowInputValue_[i]); };
+                    getRandFlowInput_ = [this](int i)
+                    { return randomSampler_->uniformInt(minFlowInputValue_[i], maxFlowInputValue_[i]); };
                     break;
                 case GAUSSIAN_REAL:
                     targetParameterCount = 2;
-                    getRandFlowInput_ = [&](int i) { return randomSampler_->gaussian(inputs[0], inputs[1]); };
+                    getRandFlowInput_ = [&](int i)
+                    { return randomSampler_->gaussian(inputs[0], inputs[1]); };
                     break;
                 case HALF_NORMAL_REAL:
                     targetParameterCount = 2; // Can also be three, if want to specify focus,
                                               // which defaults to 3.0
-                    getRandFlowInput_ = [&](int i) { return randomSampler_->halfNormalReal(inputs[0], inputs[1], inputs[2]); };
+                    getRandFlowInput_ = [&](int i)
+                    { return randomSampler_->halfNormalReal(inputs[0], inputs[1], inputs[2]); };
                     break;
                 default:
                     targetParameterCount = 2;
-                    getRandFlowInput_ = [this](int i) { return randomSampler_->uniformReal(minFlowInputValue_[i], maxFlowInputValue_[i]); };
+                    getRandFlowInput_ = [this](int i)
+                    { return randomSampler_->uniformReal(minFlowInputValue_[i], maxFlowInputValue_[i]); };
                 }
 
                 if (inputs.size() == targetParameterCount || (mode == HALF_NORMAL_INT && targetParameterCount == 3))
@@ -291,20 +297,24 @@ namespace ompl
                 {
                 case UNIFORM_INT:
                     targetParameterCount = 2;
-                    getRandJumpInput_ = [this](int i) { return randomSampler_->uniformInt(minJumpInputValue_[i], maxJumpInputValue_[i]); };
+                    getRandJumpInput_ = [this](int i)
+                    { return randomSampler_->uniformInt(minJumpInputValue_[i], maxJumpInputValue_[i]); };
                     break;
                 case GAUSSIAN_REAL:
                     targetParameterCount = 2;
-                    getRandJumpInput_ = [&](int i) { return randomSampler_->gaussian(inputs[0], inputs[1]); };
+                    getRandJumpInput_ = [&](int i)
+                    { return randomSampler_->gaussian(inputs[0], inputs[1]); };
                     break;
                 case HALF_NORMAL_REAL:
                     targetParameterCount = 2; // Can also be three parameters, if want to specify focus,
                                               // which defaults to 3.0
-                    getRandJumpInput_ = [&](int i) { return randomSampler_->halfNormalReal(inputs[0], inputs[1], inputs[2]); };
+                    getRandJumpInput_ = [&](int i)
+                    { return randomSampler_->halfNormalReal(inputs[0], inputs[1], inputs[2]); };
                     break;
                 default:
                     targetParameterCount = 2;
-                    getRandJumpInput_ = [this](int i) { return randomSampler_->uniformReal(minJumpInputValue_[i], maxJumpInputValue_[i]); };
+                    getRandJumpInput_ = [this](int i)
+                    { return randomSampler_->uniformReal(minJumpInputValue_[i], maxJumpInputValue_[i]); };
                 }
 
                 if (inputs.size() == targetParameterCount || (mode == HALF_NORMAL_INT && targetParameterCount == 3))
@@ -371,10 +381,12 @@ namespace ompl
             };
 
             /** \brief Random sampler for one value of the flow input. */
-            std::function<double(int i)> getRandFlowInput_ = [this](int i) { return randomSampler_->uniformReal(minFlowInputValue_[i], maxFlowInputValue_[i]); };
+            std::function<double(int i)> getRandFlowInput_ = [this](int i)
+            { return randomSampler_->uniformReal(minFlowInputValue_[i], maxFlowInputValue_[i]); };
 
             /** \brief Random sampler for one value of the jump input. */
-            std::function<double(int i)> getRandJumpInput_ = [this](int i) { return randomSampler_->uniformReal(minJumpInputValue_[i], maxJumpInputValue_[i]); };
+            std::function<double(int i)> getRandJumpInput_ = [this](int i)
+            { return randomSampler_->uniformReal(minJumpInputValue_[i], maxJumpInputValue_[i]); };
 
             /** \brief Collision checker. Optional is point-by-point collision checking
              * using the jump set. */
@@ -423,7 +435,10 @@ namespace ompl
              * Customize using setter functions above. */
 
             /** \brief Compute distance between states, default is Euclidean distance */
-            std::function<double(base::State *state1, base::State *state2)> distanceFunc_;
+            std::function<double(base::State *state1, base::State *state2)> distanceFunc_ = [this](base::State *state1, base::State *state2) -> double
+            {
+                return si_->distance(state1, state2);
+            };
 
             /** \brief The maximum flow time for a given flow propagation step. Must be
              * set by the user */
