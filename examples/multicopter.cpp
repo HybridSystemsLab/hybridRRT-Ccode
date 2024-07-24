@@ -325,7 +325,7 @@ ompl::base::State *continuousSimulator(std::vector<double> inputs, ompl::base::S
     return new_state;
 }
 
-/** \brief Simulates the dynamics of the ball when in jump regime, with input from the surface. */
+/** \brief Simulates the dynamics of the multicopter when in jump regime, with input from the surface. */
 ompl::base::State *discreteSimulator(ompl::base::State *x_cur, std::vector<double> u, ompl::base::State *new_state)
 {
     double x1 = x_cur->as<ompl::base::RealVectorStateSpace::StateType>()->values[0];
