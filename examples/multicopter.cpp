@@ -439,15 +439,14 @@ int main()
     statespace->addDimension(0, std::numeric_limits<double>::epsilon());
     statespace->addDimension(0, std::numeric_limits<double>::epsilon());
 
-    ompl::base::StateSpacePtr space(statespace); // Adding in third dimension for jump time (change to 3 later)
+    ompl::base::StateSpacePtr space(statespace);
 
     // Construct a space information instance for this state space
     ompl::base::SpaceInformationPtr si(new ompl::base::SpaceInformation(space));
 
     si->setup();
 
-    // Set our robot's starting state to be the bottom-left corner of
-    // the environment, or (0,0).
+    // Set start state to be (1, 2)
     ompl::base::ScopedState<> start(space);
     start->as<ompl::base::RealVectorStateSpace::StateType>()->values[0] = 1;
     start->as<ompl::base::RealVectorStateSpace::StateType>()->values[1] = 2;
@@ -460,8 +459,7 @@ int main()
     start->as<ompl::base::RealVectorStateSpace::StateType>()->values[8] = 0;
     start->as<ompl::base::RealVectorStateSpace::StateType>()->values[9] = 0;
 
-    // Set our robot's goal state to be the top-right corner of the
-    // environment, or (1,1).
+    // Set goal state to be (5, 4)
     ompl::base::ScopedState<> goal(space);
     goal->as<ompl::base::RealVectorStateSpace::StateType>()->values[0] = 5;
     goal->as<ompl::base::RealVectorStateSpace::StateType>()->values[1] = 4;
@@ -474,7 +472,7 @@ int main()
 
     ompl::geometric::HyRRT cHyRRT(si);
 
-    // Set the problem instance for our planner to solve
+    // Set parameters
     cHyRRT.setProblemDefinition(pdef);
     cHyRRT.setup();
     cHyRRT.setDistanceFunction(distanceFunc);
@@ -489,15 +487,7 @@ int main()
     cHyRRT.setUnsafeSet(unsafeSet);
     cHyRRT.setCollisionChecker(collisionChecker);
 
-    // attempt to solve the planning problem within one second of
-    // planning time
-    ompl::base::PlannerStatus solved = cHyRRT.solve(ompl::base::timedPlannerTerminationCondition(10000));
+    // attempt to solve the planning problem within 10 seconds
+    ompl::base::PlannerStatus solved = cHyRRT.solve(ompl::base::timedPlannerTerminationCondition(10));
     std::cout << "solution status: " << solved << endl;
-
-
-    // // How to access the solution path as a vector
-    // std::vector<ompl::geometric::HyRRT::Motion *> trajectory = cHyRRT.getTrajectoryMatrix();
-    // for(auto &m : trajectory) {
-    //     // Use m->as<ompl::base::RealVectorStateSpace::StateType>()->values[** desired index **]
-    // }
 }
