@@ -100,7 +100,7 @@ int main()
     ompl::base::ProblemDefinitionPtr pdef(new ompl::base::ProblemDefinition(si));
 
     // Set the start and goal states
-    pdef->setStartAndGoalStates(start, goal, 0.1);
+    pdef->setStartAndGoalStates(start, goal);
 
     ompl::geometric::HyRRT cHyRRT(si);
 

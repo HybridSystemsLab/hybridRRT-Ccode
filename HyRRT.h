@@ -119,8 +119,8 @@ namespace ompl
                 /// contained in.
                 const base::State *root{nullptr};
 
-                /// \brief The integration steps defining the edge of the motion, between the parent and child vertices
-                std::vector<base::State *> *edge{nullptr};
+                /// \brief The integration steps defining the solution pair of the motion, between the parent and child vertices
+                std::vector<base::State *> *solutionPair{nullptr};
             };
 
             /** \brief Free the memory allocated by this planner */
@@ -236,7 +236,7 @@ namespace ompl
             }
 
             /** \brief Set the collision checker. */
-            void setCollisionChecker(std::function<bool(std::vector<base::State *> *edge, std::function<bool(base::State *state)> obstacleSet,
+            void setCollisionChecker(std::function<bool(std::vector<base::State *> *solutionPair, std::function<bool(base::State *state)> obstacleSet,
                                                         double ts, double tf, base::State *newState, int tFIndex)>
                                          function)
             {
@@ -390,22 +390,22 @@ namespace ompl
 
             /** \brief Collision checker. Optional is point-by-point collision checking
              * using the jump set. */
-            std::function<bool(std::vector<base::State *> *edge,
+            std::function<bool(std::vector<base::State *> *solutionPair,
                                std::function<bool(base::State *state)> obstacleSet,
                                double ts, double tf, base::State *newState, int tFIndex)>
                 collisionChecker_ =
-                    [this](std::vector<base::State *> *edge,
+                    [this](std::vector<base::State *> *solutionPair,
                            std::function<bool(base::State *state)> obstacleSet, double t = -1.0,
                            double tf = -1.0, base::State *newState, int tFIndex = -1) -> bool
             {
-                for (unsigned int i = 0; i < edge->size(); i++)
+                for (unsigned int i = 0; i < solutionPair->size(); i++)
                 {
-                    if (obstacleSet(edge->at(i)))
+                    if (obstacleSet(solutionPair->at(i)))
                     {
                         if (i == 0)
-                            si_->copyState(newState, edge->at(i));
+                            si_->copyState(newState, solutionPair->at(i));
                         else
-                            si_->copyState(newState, edge->at(i - 1));
+                            si_->copyState(newState, solutionPair->at(i - 1));
                         return true;
                     }
                 }
