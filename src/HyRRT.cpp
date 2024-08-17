@@ -214,6 +214,7 @@ base::PlannerStatus ompl::geometric::HyRRT::solve(const base::PlannerTermination
 
             // Add motions to tree, and free up memory allocated to newState
             nn_->add(motion);
+            nn_->add(collisionParentMotion);
         }
 
         // If state is within goal set, construct path
