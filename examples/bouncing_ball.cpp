@@ -46,9 +46,11 @@ ompl::base::State *continuousSimulator(std::vector<double> inputs, ompl::base::S
 
     new_state->as<ompl::base::RealVectorStateSpace::StateType>()->values[0] = x;
     new_state->as<ompl::base::RealVectorStateSpace::StateType>()->values[1] = v;
-    new_state->as<ompl::base::RealVectorStateSpace::StateType>()->values[2] = acceleration_cur; 
-    new_state->as<ompl::base::RealVectorStateSpace::StateType>()->values[3] = x_cur->as<ompl::base::RealVectorStateSpace::StateType>()->values[3];   // Dynamics simulation functions does not touch flow time or jumps
-    new_state->as<ompl::base::RealVectorStateSpace::StateType>()->values[4] = x_cur->as<ompl::base::RealVectorStateSpace::StateType>()->values[4];
+    new_state->as<ompl::base::RealVectorStateSpace::StateType>()->values[2] = acceleration_cur;
+    new_state->as<ompl::base::RealVectorStateSpace::StateType>()->values[3] = inputs[0];
+    new_state->as<ompl::base::RealVectorStateSpace::StateType>()->values[4] = x_cur->as<ompl::base::RealVectorStateSpace::StateType>()->values[4]; // Dynamics simulation functions does not touch flow time or jumps
+    new_state->as<ompl::base::RealVectorStateSpace::StateType>()->values[5] = x_cur->as<ompl::base::RealVectorStateSpace::StateType>()->values[5];
+
     return new_state;
 }
 
@@ -60,8 +62,9 @@ ompl::base::State *discreteSimulator(ompl::base::State *x_cur, std::vector<doubl
     new_state->as<ompl::base::RealVectorStateSpace::StateType>()->values[0] = x_cur->as<ompl::base::RealVectorStateSpace::StateType>()->values[0];
     new_state->as<ompl::base::RealVectorStateSpace::StateType>()->values[1] = velocity - u[0];
     new_state->as<ompl::base::RealVectorStateSpace::StateType>()->values[2] = x_cur->as<ompl::base::RealVectorStateSpace::StateType>()->values[2];
-    new_state->as<ompl::base::RealVectorStateSpace::StateType>()->values[3] = x_cur->as<ompl::base::RealVectorStateSpace::StateType>()->values[3];   // Dynamics simulation functions does not touch flow time or jumps
-    new_state->as<ompl::base::RealVectorStateSpace::StateType>()->values[4] = x_cur->as<ompl::base::RealVectorStateSpace::StateType>()->values[4];
+    new_state->as<ompl::base::RealVectorStateSpace::StateType>()->values[3] = u[0];
+    new_state->as<ompl::base::RealVectorStateSpace::StateType>()->values[4] = x_cur->as<ompl::base::RealVectorStateSpace::StateType>()->values[4]; // Dynamics simulation functions does not touch flow time or jumps
+    new_state->as<ompl::base::RealVectorStateSpace::StateType>()->values[5] = x_cur->as<ompl::base::RealVectorStateSpace::StateType>()->values[5];
     return new_state;
 }
 
@@ -72,7 +75,8 @@ int main()
     ompl::base::RealVectorStateSpace *statespace = new ompl::base::RealVectorStateSpace(0);
     statespace->addDimension(-10, 10);
     statespace->addDimension(-100, 100);
-    statespace->addDimension(-10, 10);
+    statespace->addDimension(-10, 5);
+    statespace->addDimension(0, std::numeric_limits<double>::epsilon());
     statespace->addDimension(0, std::numeric_limits<double>::epsilon());
     statespace->addDimension(0, std::numeric_limits<double>::epsilon());
 
@@ -90,6 +94,7 @@ int main()
     start->as<ompl::base::RealVectorStateSpace::StateType>()->values[2] = -9.81;
     start->as<ompl::base::RealVectorStateSpace::StateType>()->values[3] = 0;
     start->as<ompl::base::RealVectorStateSpace::StateType>()->values[4] = 0;
+    start->as<ompl::base::RealVectorStateSpace::StateType>()->values[5] = 0;
 
     // Set goal state to be on floor with a zero velocity
     ompl::base::ScopedState<> goal(space);
@@ -116,8 +121,8 @@ int main()
     cHyRRT.setJumpSet(jumpSet);
     cHyRRT.setTm(0.5);
     cHyRRT.setFlowStepDuration(0.001);
-    cHyRRT.setFlowInputRange(std::vector<double>{-9.81}, std::vector<double>{-9.81});   // If input is a single value, only that value will every be used
-    cHyRRT.setJumpInputRange(std::vector<double>{0}, std::vector<double>{0});
+    cHyRRT.setFlowInputRange(std::vector<double>{0}, std::vector<double>{0});   // If input is a single value, only that value will every be used
+    cHyRRT.setJumpInputRange(std::vector<double>{0}, std::vector<double>{5});
     cHyRRT.setUnsafeSet(unsafeSet);
 
     // attempt to solve the planning problem within 10 seconds
