@@ -221,9 +221,6 @@ base::PlannerStatus ompl::geometric::HyRRT::solve(const base::PlannerTermination
         if(distanceFunc_(previousState, pdef_->getGoal()->as<base::GoalState>()->getState()) <= tolerance_)
             return constructSolution(solution);
     }
-
-    // Path generation failed
-    return base::PlannerStatus::INFEASIBLE; // If failed to find a path within the specified max number of iterations, then path generation has failed
 }
 
 base::PlannerStatus ompl::geometric::HyRRT::constructSolution(Motion *last_motion)
