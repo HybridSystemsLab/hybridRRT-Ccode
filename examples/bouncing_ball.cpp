@@ -1,4 +1,5 @@
 #include "../HyRRT.h"
+#include <fstream>
 
 /** \brief Function computes the Pythagorean distance between two states. */
 double distanceFunc(ompl::base::State *state1, ompl::base::State *state2)
@@ -129,5 +130,7 @@ int main()
 
     // attempt to solve the planning problem within 10 seconds
     ompl::base::PlannerStatus solved = cHyRRT.solve(ompl::base::timedPlannerTerminationCondition(10));
+    std::ofstream outFile("output.txt");
+    pdef->getSolutionPath()->as<ompl::geometric::PathGeometric>()->printAsMatrix(outFile);
     cout << "solution status: " << solved << endl;
 }
