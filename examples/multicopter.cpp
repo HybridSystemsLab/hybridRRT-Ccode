@@ -5,6 +5,7 @@
 #include "../CommonMath/RectPrism.hpp"
 #include "../CommonMath/ConvexObj.hpp"
 #include "../HyRRT.h"
+#include <fstream>
 
 using namespace CommonMath;
 
@@ -491,5 +492,8 @@ int main()
 
     // attempt to solve the planning problem within 10 seconds
     ompl::base::PlannerStatus solved = cHyRRT.solve(ompl::base::timedPlannerTerminationCondition(10));
+    std::ofstream outFile("output.txt");
+    pdef->getSolutionPath()->as<ompl::geometric::PathGeometric>()->printAsMatrix(outFile);
+    cout << "solution status: " << solved << endl;
     std::cout << "solution status: " << solved << std::endl;
 }
