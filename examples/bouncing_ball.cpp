@@ -130,7 +130,8 @@ int main()
 
     // attempt to solve the planning problem within 10 seconds
     ompl::base::PlannerStatus solved = cHyRRT.solve(ompl::base::timedPlannerTerminationCondition(10));
-    std::ofstream outFile("output.txt");
+    // print path to RViz2 data file
+    std::ofstream outFile("../../examples/visualize/src/points.txt");
     pdef->getSolutionPath()->as<ompl::geometric::PathGeometric>()->printAsMatrix(outFile);
     cout << "solution status: " << solved << endl;
 }
