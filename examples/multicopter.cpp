@@ -426,6 +426,8 @@ bool collisionChecker(std::vector<ompl::base::State *> *propStepStates, std::fun
 
 int main()
 {
+    std::uint_fast32_t seed = 1;
+    ompl::RNG::setSeed(seed);
     // Set the bounds of space
     ompl::base::RealVectorStateSpace *statespace = new ompl::base::RealVectorStateSpace(0);
     statespace->addDimension(0.5, 6.0);
@@ -489,5 +491,5 @@ int main()
 
     // attempt to solve the planning problem within 10 seconds
     ompl::base::PlannerStatus solved = cHyRRT.solve(ompl::base::timedPlannerTerminationCondition(10));
-    std::cout << "solution status: " << solved << endl;
+    std::cout << "solution status: " << solved << std::endl;
 }
