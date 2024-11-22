@@ -71,6 +71,8 @@ ompl::base::State *discreteSimulator(ompl::base::State *x_cur, std::vector<doubl
 
 int main()
 {
+    std::uint_fast32_t seed = 1;
+    ompl::RNG::setSeed(seed);
     // Set the bounds of space
     ompl::base::RealVectorStateSpace *statespace = new ompl::base::RealVectorStateSpace(0);
     statespace->addDimension(-10, 10);

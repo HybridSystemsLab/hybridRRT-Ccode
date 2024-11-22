@@ -42,6 +42,7 @@
 #include "ompl/geometric/planners/PlannerIncludes.h"
 #include "ompl/base/GoalTypes.h"
 #include "ompl/base/Planner.h"
+#include "ompl/control/Control.h"
 
 using namespace std;
 
@@ -97,7 +98,7 @@ namespace ompl
                 EURLER_RPY
             };
 
-            /// \brief Representation of a motion in the search tree
+             /// \brief Representation of a motion in the search tree
             class Motion
             {
             public:
@@ -121,6 +122,12 @@ namespace ompl
 
                 /// \brief The integration steps defining the solution pair of the motion, between the parent and child vertices
                 std::vector<base::State *> *solutionPair{nullptr};
+
+                /// \brief The inputs associated with the solution pair
+                std::vector<ompl::control::Control *> *inputs = new std::vector<ompl::control::Control *>();
+
+                /// \brief The hybrid time parameterizing each state in the solution pair
+                std::vector<std::pair<double, int>> *hybridTime = new std::vector<std::pair<double, int>>();
             };
 
             /** \brief Free the memory allocated by this planner */
