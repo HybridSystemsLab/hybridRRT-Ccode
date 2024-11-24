@@ -198,7 +198,6 @@ Trajectory polyFit3D(std::vector<std::vector<double>> states, std::vector<double
     {
         xValues[rows] = states[rows][0];
         yValues[rows] = states[rows][1];
-        tValues.push_back(states[rows][8]);
     }
 
     xCoeffs = polyfit_Eigen(tValues, xValues, 5);

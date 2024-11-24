@@ -196,8 +196,6 @@ base::PlannerStatus ompl::geometric::HyRRT::solve(const base::PlannerTermination
                 // If maximum flow time has been reached, a collision has occured, or a solution has been found, exit the loop
                 if (tFlow >= randomFlowTimeMax || collision || inGoalSet)
                 {
-                    for (int i = 0; i < intermediateStates->size(); i++)
-                        motion->inputs->push_back(flowInput);
                     hybridTimeInitial.first = hybridTimes->back().first;
 
                     if (inGoalSet)
