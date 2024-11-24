@@ -131,8 +131,8 @@ base::PlannerStatus ompl::geometric::HyRRT::solve(const base::PlannerTermination
         std::pair<double, int> hybridTimeInitial = parentMotion->hybridTime->back();
 
         // Choose whether to begin growing the tree in the flow or jump regime
-        bool in_jump = jumpSet_(previousState);
-        bool in_flow = flowSet_(previousState);
+        bool in_jump = jumpSet_(parentMotion);
+        bool in_flow = flowSet_(parentMotion);
         bool priority = in_jump && in_flow ? random / RAND_MAX > 0.5 : in_jump; // If both are true, equal chance of being in flow or jump set.
 
         // Allocate memory for the new solutionPair
@@ -151,9 +151,8 @@ base::PlannerStatus ompl::geometric::HyRRT::solve(const base::PlannerTermination
             control::Control *flowInput = controlSpace_->allocControl();
             for(int i = 0; i < flowInputs.size(); i++)
                 flowInput->as<control::RealVectorControlSpace::ControlType>()->values[i] = flowInputs[i];
-            
 
-            while (tFlow < randomFlowTimeMax && flowSet_(previousState))
+            while (tFlow < randomFlowTimeMax && flowSet_(parentMotion))
             {
                 tFlow += flowStepDuration_;
                 hybridTimes->push_back(std::pair<double, int>(tFlow + hybridTimeInitial.first, hybridTimeInitial.second));
@@ -161,10 +160,6 @@ base::PlannerStatus ompl::geometric::HyRRT::solve(const base::PlannerTermination
                 // Find new state with continuous simulation
                 base::State *intermediateState = si_->allocState();
                 intermediateState = this->continuousSimulator_(flowInputs, previousState, flowStepDuration_, intermediateState);
-
-                // Discard state if it is in the unsafe set
-                if (unsafeSet_(intermediateState))
-                    goto nextIteration;
 
                 // Add new intermediate state to solutionPair
                 intermediateStates->push_back(intermediateState);
@@ -179,6 +174,12 @@ base::PlannerStatus ompl::geometric::HyRRT::solve(const base::PlannerTermination
                 motion->parent = parentMotion;
                 motion->solutionPair = intermediateStates; // Set the new motion solutionPair
                 motion->hybridTime = hybridTimes;
+                for (int i = 0; i < intermediateStates->size(); i++)
+                    motion->inputs->push_back(flowInput);
+
+                // Discard state if it is in the unsafe set
+                if (unsafeSet_(motion))
+                    goto nextIteration;
 
                 double *collisionTime = new double(-1.0);
                 collision = collisionChecker_(motion, jumpSet_, ts, tf, intermediateState, collisionTime);
@@ -197,7 +198,7 @@ base::PlannerStatus ompl::geometric::HyRRT::solve(const base::PlannerTermination
                 {
                     for (int i = 0; i < intermediateStates->size(); i++)
                         motion->inputs->push_back(flowInput);
-                        hybridTimeInitial.first = hybridTimes->back().first;
+                    hybridTimeInitial.first = hybridTimes->back().first;
 
                     if (inGoalSet)
                         solution = motion;
@@ -227,16 +228,16 @@ base::PlannerStatus ompl::geometric::HyRRT::solve(const base::PlannerTermination
             base::State *newState = si_->allocState();
             newState = this->discreteSimulator_(previousState, jumpInputs, newState);
 
-            // If generated state is in the unsafe set, then continue on to the next iteration
-            if (unsafeSet_(newState))
-                goto nextIteration;
-
             // Create motion to add to tree
             auto *motion = new Motion(si_);
             si_->copyState(motion->state, newState);
             motion->parent = collisionParentMotion;
             motion->inputs->push_back(jumpInput);
             motion->hybridTime->push_back(std::pair<double, int>(hybridTimeInitial.first, hybridTimeInitial.second + 1));
+
+            // If generated state is in the unsafe set, then continue on to the next iteration
+            if (unsafeSet_(motion))
+                goto nextIteration;
 
             // Add motions to tree, and free up memory allocated to newState
             nn_->add(motion);

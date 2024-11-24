@@ -5,6 +5,7 @@
 #include "../CommonMath/RectPrism.hpp"
 #include "../CommonMath/ConvexObj.hpp"
 #include "../HyRRT.h"
+#include "ompl/control/spaces/RealVectorControlSpace.h"
 #include <fstream> // For file I/O
 #include <iomanip> // For formatting output
 
@@ -266,10 +267,10 @@ bool Xu(double x1, double x2)
 }
 
 /** \brief Jump set is true whenever the multicopter is within the area of the c-shaped obstacle. */
-bool jumpSet(ompl::base::State *state)
+bool jumpSet(ompl::geometric::HyRRT::Motion *motion)
 {
-    double x1 = state->as<ompl::base::RealVectorStateSpace::StateType>()->values[0];
-    double x2 = state->as<ompl::base::RealVectorStateSpace::StateType>()->values[1];
+    double x1 = motion->state->as<ompl::base::RealVectorStateSpace::StateType>()->values[0];
+    double x2 = motion->state->as<ompl::base::RealVectorStateSpace::StateType>()->values[1];
     bool value = false;
 
     // Jump state
@@ -280,15 +281,15 @@ bool jumpSet(ompl::base::State *state)
 }
 
 /** \brief Flow set is true whenever the multicopter is outside of the area of the c-shaped obstacle. */
-bool flowSet(ompl::base::State *state)
+bool flowSet(ompl::geometric::HyRRT::Motion *motion)
 {
-    return !jumpSet(state);
+    return !jumpSet(motion);
 }
 
 /** \brief Unsafe set is true whenever the multicopter is outside of the 6x7 rectangular planning space. */
-bool unsafeSet(ompl::base::State *state)
+bool unsafeSet(ompl::geometric::HyRRT::Motion *motion)
 {
-    std::vector<double> x_cur = {state->as<ompl::base::RealVectorStateSpace::StateType>()->values[0], state->as<ompl::base::RealVectorStateSpace::StateType>()->values[1], state->as<ompl::base::RealVectorStateSpace::StateType>()->values[2], state->as<ompl::base::RealVectorStateSpace::StateType>()->values[3]};
+    std::vector<double> x_cur = {motion->state->as<ompl::base::RealVectorStateSpace::StateType>()->values[0], motion->state->as<ompl::base::RealVectorStateSpace::StateType>()->values[1], motion->state->as<ompl::base::RealVectorStateSpace::StateType>()->values[2], motion->state->as<ompl::base::RealVectorStateSpace::StateType>()->values[3]};
     if (x_cur[0] < 0.5 || x_cur[0] > 6 || x_cur[1] < 0 || x_cur[1] > 7 || Xu(x_cur[0], x_cur[1]))
         return true;
     return false;
@@ -361,7 +362,7 @@ ompl::base::State *discreteSimulator(ompl::base::State *x_cur, std::vector<doubl
 }
 
 /** \brief Collision checker for the multicopter, courtesy of Berkeley Hybrid Systems Lab. */
-bool collisionChecker(ompl::geometric::HyRRT::Motion *motion, std::function<bool(ompl::base::State *state)> obstacleSet, double ts, double tf, ompl::base::State *new_state, double *collisionTime)
+bool collisionChecker(ompl::geometric::HyRRT::Motion *motion, std::function<bool(ompl::geometric::HyRRT::Motion *motion)> obstacleSet, double ts, double tf, ompl::base::State *new_state, double *collisionTime)
 {
     std::vector<std::vector<double>> *propStepStatesDouble = new std::vector<std::vector<double>>();
     for (int i = 0; i < motion->solutionPair->size(); i++)

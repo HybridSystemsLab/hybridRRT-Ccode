@@ -205,19 +205,19 @@ namespace ompl
             }
 
             /** \brief Set the jump set. */
-            void setJumpSet(std::function<bool(base::State *)> jumpSet)
+            void setJumpSet(std::function<bool(Motion *motion)> jumpSet)
             {
                 jumpSet_ = jumpSet;
             }
 
             /** \brief Set the flow set. */
-            void setFlowSet(std::function<bool(base::State *)> flowSet)
+            void setFlowSet(std::function<bool(Motion *motion)> flowSet)
             {
                 flowSet_ = flowSet;
             }
 
             /** \brief Set the unsafe set. */
-            void setUnsafeSet(std::function<bool(base::State *)> unsafeSet)
+            void setUnsafeSet(std::function<bool(Motion *motion)> unsafeSet)
             {
                 unsafeSet_ = unsafeSet;
             }
@@ -243,7 +243,7 @@ namespace ompl
             }
 
             /** \brief Set the collision checker. */
-            void setCollisionChecker(std::function<bool(Motion *motion, std::function<bool(base::State *state)> obstacleSet,
+            void setCollisionChecker(std::function<bool(Motion *motion, std::function<bool(Motion *motion)> obstacleSet,
                                                         double ts, double tf, base::State *newState, double *collisionTime)>
                                          function)
             {
@@ -398,24 +398,16 @@ namespace ompl
             /** \brief Collision checker. Optional is point-by-point collision checking
              * using the jump set. */
             std::function<bool(Motion *motion,
-                               std::function<bool(base::State *state)> obstacleSet,
+                               std::function<bool(Motion *motion)> obstacleSet,
                                double ts, double tf, base::State *newState, double *collisionTime)>
                 collisionChecker_ =
                     [this](Motion *motion,
-                           std::function<bool(base::State *state)> obstacleSet, double t = -1.0,
+                           std::function<bool(Motion *motion)> obstacleSet, double t = -1.0,
                            double tf = -1.0, base::State *newState, double *collisionTime = new double(-1.0)) -> bool
             {
-                for (unsigned int i = 0; i < motion->solutionPair->size(); i++)
-                {
-                    if (obstacleSet(motion->solutionPair->at(i)))
-                    {
-                        if (i == 0)
-                            si_->copyState(newState, motion->solutionPair->at(i));
-                        else
-                            si_->copyState(newState, motion->solutionPair->at(i - 1));
-                        return true;
-                    }
-                }
+
+                if (obstacleSet(motion))
+                    return true;
                 return false;
             };
 
@@ -478,15 +470,15 @@ namespace ompl
 
             /** \brief Function that returns true if a state is in the jump set, and false
              * if not. */
-            std::function<bool(base::State *state)> jumpSet_;
+            std::function<bool(Motion *motion)> jumpSet_;
 
             /** \brief Function that returns true if a state is in the flow set, and false
              * if not. */
-            std::function<bool(base::State *state)> flowSet_;
+            std::function<bool(Motion *motion)> flowSet_;
 
             /** \brief Function that returns true if a state is in the flow set, and false
              * if not. */
-            std::function<bool(base::State *state)> unsafeSet_;
+            std::function<bool(Motion *motion)> unsafeSet_;
 
             /** \brief Simulator for propgation under flow regime */
             std::function<base::State *(std::vector<double> input, base::State *curState, double tFlowMax, base::State *newState)> continuousSimulator_;

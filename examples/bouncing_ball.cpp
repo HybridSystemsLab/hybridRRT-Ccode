@@ -1,4 +1,5 @@
 #include "../HyRRT.h"
+#include "ompl/control/spaces/RealVectorControlSpace.h"
 #include <fstream>
 
 /** \brief Function computes the Pythagorean distance between two states. */
@@ -10,10 +11,10 @@ double distanceFunc(ompl::base::State *state1, ompl::base::State *state2)
 }
 
 /** \brief Jump set is true whenever the ball is on or below the surface and has a downwards velocity. */
-bool jumpSet(ompl::base::State *state)
+bool jumpSet(ompl::geometric::HyRRT::Motion *motion)
 {
-    double velocity = state->as<ompl::base::RealVectorStateSpace::StateType>()->values[1];
-    double pos_cur = state->as<ompl::base::RealVectorStateSpace::StateType>()->values[0];
+    double velocity = motion->state->as<ompl::base::RealVectorStateSpace::StateType>()->values[1];
+    double pos_cur = motion->state->as<ompl::base::RealVectorStateSpace::StateType>()->values[0];
 
     if (pos_cur <= 0 && velocity <= 0)
         return true;
@@ -22,15 +23,16 @@ bool jumpSet(ompl::base::State *state)
 }
 
 /** \brief Flow set is true whenever the ball is above the surface or has an upwards velocity. */
-bool flowSet(ompl::base::State *state)
+bool flowSet(ompl::geometric::HyRRT::Motion *motion)
 {
-    return !jumpSet(state);
+    return !jumpSet(motion);
 }
 
 /** \brief Unsafe set is true whenever the ball is above 10 units from the ground, to reduce time spent planning. */
-bool unsafeSet(ompl::base::State *state)
+bool unsafeSet(ompl::geometric::HyRRT::Motion *motion)
 {
-    if (state->as<ompl::base::RealVectorStateSpace::StateType>()->values[0] > 10)
+    double u = motion->inputs->back()->as<ompl::control::RealVectorControlSpace::ControlType>()->values[0];
+    if (u > 5 || u < 0)
         return true;
     return false;
 }
