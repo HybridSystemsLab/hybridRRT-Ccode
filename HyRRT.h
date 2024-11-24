@@ -243,8 +243,8 @@ namespace ompl
             }
 
             /** \brief Set the collision checker. */
-            void setCollisionChecker(std::function<bool(std::vector<base::State *> *solutionPair, std::function<bool(base::State *state)> obstacleSet,
-                                                        double ts, double tf, base::State *newState, int tFIndex)>
+            void setCollisionChecker(std::function<bool(Motion *motion, std::function<bool(base::State *state)> obstacleSet,
+                                                        double ts, double tf, base::State *newState, double *collisionTime)>
                                          function)
             {
                 collisionChecker_ = function;
@@ -397,22 +397,22 @@ namespace ompl
 
             /** \brief Collision checker. Optional is point-by-point collision checking
              * using the jump set. */
-            std::function<bool(std::vector<base::State *> *solutionPair,
+            std::function<bool(Motion *motion,
                                std::function<bool(base::State *state)> obstacleSet,
-                               double ts, double tf, base::State *newState, int tFIndex)>
+                               double ts, double tf, base::State *newState, double *collisionTime)>
                 collisionChecker_ =
-                    [this](std::vector<base::State *> *solutionPair,
+                    [this](Motion *motion,
                            std::function<bool(base::State *state)> obstacleSet, double t = -1.0,
-                           double tf = -1.0, base::State *newState, int tFIndex = -1) -> bool
+                           double tf = -1.0, base::State *newState, double *collisionTime = new double(-1.0)) -> bool
             {
-                for (unsigned int i = 0; i < solutionPair->size(); i++)
+                for (unsigned int i = 0; i < motion->solutionPair->size(); i++)
                 {
-                    if (obstacleSet(solutionPair->at(i)))
+                    if (obstacleSet(motion->solutionPair->at(i)))
                     {
                         if (i == 0)
-                            si_->copyState(newState, solutionPair->at(i));
+                            si_->copyState(newState, motion->solutionPair->at(i));
                         else
-                            si_->copyState(newState, solutionPair->at(i - 1));
+                            si_->copyState(newState, motion->solutionPair->at(i - 1));
                         return true;
                     }
                 }
