@@ -5,7 +5,8 @@
 #include "../CommonMath/RectPrism.hpp"
 #include "../CommonMath/ConvexObj.hpp"
 #include "../HyRRT.h"
-#include <fstream>
+#include <fstream> // For file I/O
+#include <iomanip> // For formatting output
 
 using namespace CommonMath;
 
@@ -427,8 +428,8 @@ bool collisionChecker(std::vector<ompl::base::State *> *propStepStates, std::fun
 
 int main()
 {
-    std::uint_fast32_t seed = 1;
-    ompl::RNG::setSeed(seed);
+    // std::uint_fast32_t seed = 1;
+    // ompl::RNG::setSeed(seed);
     // Set the bounds of space
     ompl::base::RealVectorStateSpace *statespace = new ompl::base::RealVectorStateSpace(0);
     statespace->addDimension(0.5, 6.0);
@@ -495,6 +496,5 @@ int main()
     // print path to RViz2 data file
     std::ofstream outFile("../../examples/visualize/src/points.txt");
     pdef->getSolutionPath()->as<ompl::geometric::PathGeometric>()->printAsMatrix(outFile);
-    cout << "solution status: " << solved << endl;
     std::cout << "solution status: " << solved << std::endl;
 }

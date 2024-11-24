@@ -61,7 +61,7 @@ ompl::base::State *discreteSimulator(ompl::base::State *x_cur, std::vector<doubl
     double velocity = -0.8 * x_cur->as<ompl::base::RealVectorStateSpace::StateType>()->values[1];
 
     new_state->as<ompl::base::RealVectorStateSpace::StateType>()->values[0] = x_cur->as<ompl::base::RealVectorStateSpace::StateType>()->values[0];
-    new_state->as<ompl::base::RealVectorStateSpace::StateType>()->values[1] = velocity - u[0];
+    new_state->as<ompl::base::RealVectorStateSpace::StateType>()->values[1] = velocity + u[0];
     new_state->as<ompl::base::RealVectorStateSpace::StateType>()->values[2] = x_cur->as<ompl::base::RealVectorStateSpace::StateType>()->values[2];
     new_state->as<ompl::base::RealVectorStateSpace::StateType>()->values[3] = u[0];
     new_state->as<ompl::base::RealVectorStateSpace::StateType>()->values[4] = x_cur->as<ompl::base::RealVectorStateSpace::StateType>()->values[4]; // Dynamics simulation functions does not touch flow time or jumps

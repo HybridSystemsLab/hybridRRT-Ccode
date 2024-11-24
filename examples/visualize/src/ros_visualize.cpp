@@ -36,6 +36,8 @@ std::vector<std::vector<double>> read_file_as_matrix(std::string file_name)
     std::vector<std::vector<double>> matrix;
     while (std::getline(file, line))
     {
+        if(line.empty())    // Reached end of matrix
+            break;
         std::istringstream iss(line);
 
         if (line.empty()) {
@@ -232,10 +234,9 @@ private:
             obs4.color.a = 1;
             obs4.color.r = obs4.color.g = obs4.color.b = 255.0f;
 
-            // Comment out these next three lines if you are running the bouncing_ball visualization
-            marker_pub->publish(obs1);
-            marker_pub->publish(obs2);
-            marker_pub->publish(obs3);
+            marker_array_msg->markers.push_back(obs1);
+            marker_array_msg->markers.push_back(obs2);
+            marker_array_msg->markers.push_back(obs3);
         }
 
         marker_pub_->publish(*marker_array_msg);

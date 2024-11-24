@@ -56,7 +56,7 @@ ompl::geometric::HyRRT::HyRRT(const base::SpaceInformationPtr &si_) : base::Plan
 ompl::geometric::HyRRT::~HyRRT()
 {
     // free any allocated memory
-    freeMemory();
+    // freeMemory();
 }
 
 void ompl::geometric::HyRRT::initTree(void)
