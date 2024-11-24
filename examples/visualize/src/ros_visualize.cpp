@@ -37,6 +37,11 @@ std::vector<std::vector<double>> read_file_as_matrix(std::string file_name)
     while (std::getline(file, line))
     {
         std::istringstream iss(line);
+
+        if (line.empty()) {
+            break;
+        }
+        
         std::vector<double> row;
         double value;
         while (iss >> value)
@@ -135,13 +140,24 @@ private:
             else
             {
                 marker.type = visualization_msgs::msg::Marker::SPHERE;
-                marker.scale.x = 0.05;
-                marker.scale.y = 0.05;
-                marker.scale.z = 0.05;
-                marker.color.a = 0.5;
-                marker.color.r = 1.0;
-                marker.color.g = 1.0;
-                marker.color.b = 1.0;
+                if(matrix[row][matrix[0].size() - 1] != matrix[row - 1][matrix[0].size() - 1]) {
+                    marker.scale.x = 0.15;
+                    marker.scale.y = 0.15;
+                    marker.scale.z = 0.15;
+                    marker.color.a = 0.5;
+                    marker.color.r = 1.0;
+                    marker.color.g = 0.0;
+                    marker.color.b = 0.0;
+                }
+                else {
+                    marker.scale.x = 0.05;
+                    marker.scale.y = 0.05;
+                    marker.scale.z = 0.05;
+                    marker.color.a = 0.5;
+                    marker.color.r = 1.0;
+                    marker.color.g = 1.0;
+                    marker.color.b = 1.0;
+                }
             }
 
             marker_array_msg->markers.push_back(marker);
