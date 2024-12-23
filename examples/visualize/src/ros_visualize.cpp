@@ -252,13 +252,13 @@ private:
 
 std::shared_ptr<PointMatrixPublisher> node;
 
-void signal_callback_handler(int signum)
-{
-   printf("Caught signal %d\n",signum);
-   // Cleanup and close up stuff here
-   node->visual_tools_->deleteAllMarkers();
-
-   // Terminate program
+void signal_callback_handler(int signum) {
+   auto marker_array_msg = std::make_shared<visualization_msgs::msg::MarkerArray>();
+   visualization_msgs::msg::Marker marker;
+   marker.action = visualization_msgs::msg::Marker::DELETEALL;
+   marker_array_msg->markers.push_back(marker);
+   node->marker_pub_->publish(*marker_array_msg);
+   rclcpp::sleep_for(std::chrono::milliseconds(100)); // Give time for publish
    exit(signum);
 }
 
