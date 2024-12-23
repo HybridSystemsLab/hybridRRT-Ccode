@@ -165,8 +165,8 @@ base::PlannerStatus ompl::geometric::HyRRT::solve(const base::PlannerTermination
                 intermediateStates->push_back(intermediateState);
 
                 // Collision Checking
-                double ts = hybridTimeInitial.first;
-                double tf = hybridTimeInitial.first + tFlow;
+                double ts = hybridTimes->front().first;
+                double tf = hybridTimes->back().first;
 
                 // Create motion to add to tree
                 auto *motion = new Motion(si_);
@@ -246,6 +246,7 @@ base::PlannerStatus ompl::geometric::HyRRT::solve(const base::PlannerTermination
         if(distanceFunc_(previousState, pdef_->getGoal()->as<base::GoalState>()->getState()) <= tolerance_)
             return constructSolution(solution);
     }
+    return base::PlannerStatus::UNKNOWN;
 }
 
 base::PlannerStatus ompl::geometric::HyRRT::constructSolution(Motion *last_motion)
