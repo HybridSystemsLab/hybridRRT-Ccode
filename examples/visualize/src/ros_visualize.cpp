@@ -27,7 +27,6 @@
 #include <geometry_msgs/msg/point.hpp>
 #include <geometry_msgs/msg/pose2_d.hpp>
 #include <visualization_msgs/msg/marker.hpp>
-#include <rviz_visual_tools/rviz_visual_tools.hpp>
 
 // Function to read a file and store its contents as a matrix
 std::vector<std::vector<double>> read_file_as_matrix(std::string file_name)
@@ -76,21 +75,16 @@ public:
     rclcpp::Publisher<visualization_msgs::msg::MarkerArray>::SharedPtr marker_pub_;
     rclcpp::Publisher<visualization_msgs::msg::Marker>::SharedPtr marker_pub;
     rclcpp::TimerBase::SharedPtr timer_;
-    rviz_visual_tools::RvizVisualToolsPtr visual_tools_;
 
     PointMatrixPublisher(std::vector<std::vector<double>> matrix, std::vector<double> index_matrix, std::string obstacle) : Node("point_matrix_publisher")
     {
         // Create publishers for point matrix and obstacles
         marker_pub_ = this->create_publisher<visualization_msgs::msg::MarkerArray>("point_matrix", 10);
         marker_pub = this->create_publisher<visualization_msgs::msg::Marker>("obstacles", 10);
-        visual_tools_.reset(new rviz_visual_tools::RvizVisualTools("base_frame","/rviz_visual_markers", this));
 
         // Create a timer to publish points periodically
         timer_ = this->create_wall_timer(std::chrono::milliseconds(1000), [this, matrix, index_matrix, obstacle]()
                                          { this->publishPoints(matrix, index_matrix, obstacle); });
-    }
-    ~PointMatrixPublisher() {
-        visual_tools_->deleteAllMarkers();
     }
 
 private:

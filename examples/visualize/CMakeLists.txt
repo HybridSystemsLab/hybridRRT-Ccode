@@ -20,12 +20,11 @@ find_package(rosidl_default_generators REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(std_srvs REQUIRED)
 find_package(visualization_msgs REQUIRED)
-find_package(rviz_visual_tools REQUIRED)
 find_package(ament_lint_auto REQUIRED)
 
 include_directories(include ${Qt5Widgets_INCLUDE_DIRS})
 
-set(dependencies "ament_index_cpp" "geometry_msgs" "rclcpp" "rclcpp_action" "std_msgs" "std_srvs" "visualization_msgs" "rviz_visual_tools")
+set(dependencies "ament_index_cpp" "geometry_msgs" "rclcpp" "rclcpp_action" "std_msgs" "std_srvs" "visualization_msgs")
 
 
 add_executable(ros_visualize src/ros_visualize.cpp)

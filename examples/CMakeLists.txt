@@ -6,8 +6,6 @@ find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(visualization_msgs REQUIRED)
-find_package(tf2_eigen REQUIRED)
-find_package(rviz_visual_tools REQUIRED)
 
 # Add executable for multicopter.cpp
 add_executable(multicopter multicopter.cpp)
@@ -27,7 +25,7 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
-ament_target_dependencies(visualize rclcpp std_msgs geometry_msgs visualization_msgs rviz_visual_tools tf2_eigen)
+ament_target_dependencies(visualize rclcpp std_msgs geometry_msgs visualization_msgs)
 
 install(TARGETS
 visualize
