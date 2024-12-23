@@ -250,16 +250,29 @@ private:
     }
 };
 
+std::shared_ptr<PointMatrixPublisher> node;
+
+void signal_callback_handler(int signum)
+{
+   printf("Caught signal %d\n",signum);
+   // Cleanup and close up stuff here
+   node->visual_tools_->deleteAllMarkers();
+
+   // Terminate program
+   exit(signum);
+}
+
 int main(int argc, char *argv[])
 {
     rclcpp::init(argc, argv);
-
+    signal(SIGINT, signal_callback_handler);
     // Read the coordinate indices and points from files
     std::vector<double> index_matrix = read_file_as_matrix("coordinate_indices.txt")[0];
     std::vector<std::vector<double>> matrix = read_file_as_matrix("src/points.txt");
     std::string obstacle = read_file_as_string("obstacles.txt");
 
     // Create and spin the PointMatrixPublisher node
-    rclcpp::spin(std::make_shared<PointMatrixPublisher>(matrix, index_matrix, obstacle));
+    node = std::make_shared<PointMatrixPublisher>(matrix, index_matrix, obstacle);
+    rclcpp::spin(node);
     return 0;
 }
