@@ -443,7 +443,7 @@ int main()
 
     // Set start state to be (1, 2)
     ompl::base::ScopedState<> start(space);
-    start->as<ompl::base::RealVectorStateSpace::StateType>()->values[0] = 1;
+    start->as<ompl::base::RealVectorStateSpace::StateType>()->values[0] = 0.55;
     start->as<ompl::base::RealVectorStateSpace::StateType>()->values[1] = 2;
     start->as<ompl::base::RealVectorStateSpace::StateType>()->values[2] = 0;
     start->as<ompl::base::RealVectorStateSpace::StateType>()->values[3] = 0;
