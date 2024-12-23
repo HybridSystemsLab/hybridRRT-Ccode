@@ -1,5 +1,5 @@
 # !/bin/bash
-run "../../build/examples/bouncing_ball1"
+./../../build/examples/bouncing_ball1
 echo "4 0" > "coordinate_indices.txt"
 echo "n" > "obstacles.txt"
 colcon build --packages-select visualize

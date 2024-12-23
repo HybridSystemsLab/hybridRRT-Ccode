@@ -1,5 +1,5 @@
 # !/bin/bash
-run "../../build/examples/multicopter2"
+./../../build/examples/multicopter2
 echo "0 1" > "coordinate_indices.txt"
 echo "y" > "obstacles.txt"
 colcon build --packages-select visualize
