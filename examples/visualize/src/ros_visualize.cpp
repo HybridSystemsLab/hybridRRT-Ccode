@@ -84,11 +84,13 @@ public:
         marker_pub_ = this->create_publisher<visualization_msgs::msg::MarkerArray>("point_matrix", 10);
         marker_pub = this->create_publisher<visualization_msgs::msg::Marker>("obstacles", 10);
         visual_tools_.reset(new rviz_visual_tools::RvizVisualTools("base_frame","/rviz_visual_markers", this));
-        visual_tools_->deleteAllMarkers();
-        
+
         // Create a timer to publish points periodically
         timer_ = this->create_wall_timer(std::chrono::milliseconds(1000), [this, matrix, index_matrix, obstacle]()
                                          { this->publishPoints(matrix, index_matrix, obstacle); });
+    }
+    ~PointMatrixPublisher() {
+        visual_tools_->deleteAllMarkers();
     }
 
 private:
