@@ -1,3 +1,4 @@
+# !/bin/bash
 echo "Enter index (0-) of the desired x-coordinates: "
 read x_index
 echo "Enter index (0-) of the desired y-coordinates: "
