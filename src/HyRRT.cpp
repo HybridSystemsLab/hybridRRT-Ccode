@@ -54,11 +54,7 @@ ompl::geometric::HyRRT::HyRRT(const base::SpaceInformationPtr &si_) : base::Plan
     specs_.directed = true;
 }
 
-ompl::geometric::HyRRT::~HyRRT()
-{
-    // free any allocated memory
-    // freeMemory();
-}
+ompl::geometric::HyRRT::~HyRRT() {}
 
 void ompl::geometric::HyRRT::initTree(void)
 {
@@ -360,8 +356,6 @@ void ompl::geometric::HyRRT::clear()
     // clear the data structures here
 }
 
-// optional, if additional setup/configuration is needed, the setup() method can
-// be implemented
 void ompl::geometric::HyRRT::setup()
 {
     Planner::setup();
@@ -371,20 +365,7 @@ void ompl::geometric::HyRRT::setup()
     nn_->setDistanceFunction([this](const Motion *a, const Motion *b) { return ompl::geometric::HyRRT::distanceFunc_(a->state, b->state); });
 }
 
-void ompl::geometric::HyRRT::freeMemory(void)
-{
-    // if (nn_)
-    // {
-    //     std::vector<Motion *> motions;
-    //     nn_->list(motions);
-    //     for (auto &motion : motions)
-    //     {
-    //         if (motion->state != nullptr)
-    //             si_->freeState(motion->state);
-    //         delete motion;
-    //     }
-    // }
-}
+void ompl::geometric::HyRRT::freeMemory(void) {}
 
 void ompl::geometric::HyRRT::getPlannerData(base::PlannerData &data) const
 {

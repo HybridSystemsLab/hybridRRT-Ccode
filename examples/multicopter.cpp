@@ -477,7 +477,6 @@ int main()
     cHyRRT.setJumpInputRange(std::vector<double>{0, 0}, std::vector<double>{0, 0});
     cHyRRT.setUnsafeSet(unsafeSet);
     cHyRRT.setCollisionChecker(collisionChecker);
-
     // attempt to solve the planning problem within 10 seconds
     ompl::base::PlannerStatus solved = cHyRRT.solve(ompl::base::timedPlannerTerminationCondition(10));
     // print path to RViz2 data file
