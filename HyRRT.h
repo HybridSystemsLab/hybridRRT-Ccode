@@ -52,8 +52,7 @@ namespace ompl
     {
         /**
            @anchor HyRRT
-           @par Brief description
-           Hybrid RRT (HyRRT) is an RRT algorithm that solves separate optimization
+           @par Hybrid RRT (HyRRT) is an RRT algorithm that solves separate optimization
            problems associated with the flows and jumps of the systems, to solve a
            variety of robotic motion planning problems. As an RRT algorithm, HyRRT is
            probabilistically-complete. The logical flow of the algorithm is as follows:
@@ -112,7 +111,7 @@ namespace ompl
                 EURLER_RPY
             };
 
-             /// \brief Representation of a motion in the search tree
+            /// \brief Representation of a motion in the search tree
             class Motion
             {
             public:
@@ -482,13 +481,14 @@ namespace ompl
              * Customize using setter functions above. */
 
             /**
-             * \brief Collision checker. Optional is point-by-point collision checking using the jump set.
+             * \brief Collision checker. Default is point-by-point collision checking using the jump set.
              * @param motion The motion to check for collision
              * @param obstacleSet A function that returns true if the motion's solution pair intersects with the obstacle set
              * @param ts The start time of the motion. Default is -1.0
              * @param tf The end time of the motion. Default is -1.0
              * @param newState The collision state (if a collision occurs)
              * @param collisionTime The time of collision (if a collision occurs). If no collision occurs, this value is -1.0
+             * @return true if a collision occurs, false otherwise
              */
             std::function<bool(Motion *motion,
                                std::function<bool(Motion *motion)> obstacleSet,
@@ -530,16 +530,16 @@ namespace ompl
             /// \brief The flow time for a given integration step, within a flow propagation step. Must be set by user.
             double flowStepDuration_;
 
-            /// \brief Minimum input values
+            /// \brief Minimum flow input values
             std::vector<double> minFlowInputValue_;
 
-            /// \brief Maximum input values
+            /// \brief Maximum flow input values
             std::vector<double> maxFlowInputValue_;
 
-            /// \brief Minimum input values
+            /// \brief Minimum jump input values
             std::vector<double> minJumpInputValue_;
 
-            /// \brief Maximum input values
+            /// \brief Maximum jump input values
             std::vector<double> maxJumpInputValue_;
 
             /** 
